@@ -81,6 +81,8 @@ def inference(model_inputs:dict) -> dict:
     with open("concepts_list.json", "w") as f:
         json.dump(concepts_list, f, indent=4)
 
+    os.system('ls -la')
+
     command = f"""
     accelerate launch --mixed_precision=fp16 train_dreambooth21.py \
     --pretrained_model_name_or_path={pretrained_model_name_or_path} \
@@ -110,6 +112,8 @@ def inference(model_inputs:dict) -> dict:
 
 
     os.system(command)
+
+    os.system('ls -la')
 
     files_and_folders = os.listdir(OUTPUT_DIR)
     filtered_files = []
