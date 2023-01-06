@@ -62,7 +62,9 @@ def inference(model_inputs:dict) -> dict:
     guidance_scale = model_inputs.get('guidance_scale', 7.5)
     input_seed = model_inputs.get("seed",None)
 
-    
+
+
+
     if concepts_list == None:
         return {'message': "No concepts_list provided"}
 
