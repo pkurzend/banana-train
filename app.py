@@ -53,6 +53,16 @@ def inference(model_inputs:dict) -> dict:
     center_crop = model_inputs.get("center_crop", True)
     center_crop = model_inputs.get("center_crop", True)
 
+
+    prompt = model_inputs.get('prompt', None)
+    negative_prompt = model_inputs.get('negative_prompt', '')
+    height = model_inputs.get('height', 768)
+    width = model_inputs.get('width', 768)
+    num_inference_steps = model_inputs.get('num_inference_steps', 50)
+    guidance_scale = model_inputs.get('guidance_scale', 7.5)
+    input_seed = model_inputs.get("seed",None)
+
+    
     if concepts_list == None:
         return {'message': "No concepts_list provided"}
 
@@ -129,13 +139,7 @@ def inference(model_inputs:dict) -> dict:
     model.tokenizer.load_embedding('<action-helper>', './ActionHelper.pt', model.text_encoder)
 
 
-    prompt = model_inputs.get('prompt', None)
-    negative_prompt = model_inputs.get('negative_prompt', '')
-    height = model_inputs.get('height', 768)
-    width = model_inputs.get('width', 768)
-    num_inference_steps = model_inputs.get('num_inference_steps', 50)
-    guidance_scale = model_inputs.get('guidance_scale', 7.5)
-    input_seed = model_inputs.get("seed",None)
+
     
     #If "seed" is not sent, we won't specify a seed in the call
     generator = None
