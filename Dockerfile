@@ -6,7 +6,7 @@ WORKDIR /
 # Install git
 RUN apt-get update && apt-get install -y git
 RUN apt-get install -y wget
-RUN sudo apt-get install -y build-essential python3-dev
+RUN apt-get install -y build-essential python3-dev
 
 # Install python packages
 RUN pip3 install --upgrade pip
