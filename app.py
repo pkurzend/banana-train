@@ -73,6 +73,10 @@ def inference(model_inputs:dict) -> dict:
 
     for c in concepts_list:
         os.makedirs(c["instance_data_dir"], exist_ok=True)
+        if c.get('class_data_dir'):
+            os.makedirs(c["class_data_dir"], exist_ok=True)
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     with open("concepts_list.json", "w") as f:
         json.dump(concepts_list, f, indent=4)
