@@ -3,11 +3,25 @@
 
 # In this example: A Huggingface BERT model
 
-from transformers import pipeline
+from diffusers import StableDiffusionPipeline, LMSDiscreteScheduler
+import os
 
-def download_model():
-    # do a dry run of loading the huggingface model, which will download weights
-    pipeline('fill-mask', model='bert-base-uncased')
+from transformers import CLIPTextModel, CLIPTokenizer
+import torch
+from diffusers import StableDiffusionPipeline, DDIMScheduler, DPMSolverMultistepScheduler, LMSDiscreteScheduler, EulerDiscreteScheduler, DDPMScheduler, UNet2DConditionModel, AutoencoderKL
+from CLIPTokenizerWithEmbeddings import CLIPTokenizerWithEmbeddings
 
-if __name__ == "__main__":
-    download_model()
+HF_AUTH_TOKEN = os.getenv("HF_AUTH_TOKEN")
+
+
+model_path = 'stabilityai/stable-diffusion-2'
+scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
+tokenizer = CLIPTokenizerWithEmbeddings.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16, use_auth_token=HF_AUTH_TOKEN)
+
+
+model_path = 'stabilityai/stable-diffusion-2-1-base'
+scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
+tokenizer = CLIPTokenizerWithEmbeddings.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16, use_auth_token=HF_AUTH_TOKEN)
+
