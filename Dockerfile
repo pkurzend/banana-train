@@ -1,10 +1,11 @@
 # Must use a Cuda version 11+
-FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+# FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
 
 WORKDIR /
 
 # Install git
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y python3 python3-pip git
 RUN apt-get install -y wget
 RUN apt-get install -y build-essential python3-dev
 
@@ -20,7 +21,12 @@ EXPOSE 8000
 # Add your huggingface auth key here
 ENV HF_AUTH_TOKEN=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
 
+ARG KEY
+ARG SECRET
+ENV KEY=$KEY
+ENV SECRET=$SECRET
 
+ENV LD_LIBRARY_PATH=/opt/conda/lib
 
 
 

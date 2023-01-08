@@ -9,19 +9,29 @@ import os
 from transformers import CLIPTextModel, CLIPTokenizer
 import torch
 from diffusers import StableDiffusionPipeline, DDIMScheduler, DPMSolverMultistepScheduler, LMSDiscreteScheduler, EulerDiscreteScheduler, DDPMScheduler, UNet2DConditionModel, AutoencoderKL
-from CLIPTokenizerWithEmbeddings import CLIPTokenizerWithEmbeddings
+
 
 HF_AUTH_TOKEN = os.getenv("HF_AUTH_TOKEN")
 
 
 model_path = 'stabilityai/stable-diffusion-2'
 scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
-tokenizer = CLIPTokenizerWithEmbeddings.from_pretrained(model_path, subfolder="tokenizer")
-pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16, use_auth_token=HF_AUTH_TOKEN)
+tokenizer = CLIPTokenizer.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16, revision='fp16', use_auth_token=HF_AUTH_TOKEN)
+
+model_path = 'stabilityai/stable-diffusion-2'
+scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
+tokenizer = CLIPTokenizer.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16,  revision=None, use_auth_token=HF_AUTH_TOKEN)
 
 
 model_path = 'stabilityai/stable-diffusion-2-1-base'
 scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
-tokenizer = CLIPTokenizerWithEmbeddings.from_pretrained(model_path, subfolder="tokenizer")
-pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16, use_auth_token=HF_AUTH_TOKEN)
+tokenizer = CLIPTokenizer.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16,  revision='fp16', use_auth_token=HF_AUTH_TOKEN)
+
+model_path = 'stabilityai/stable-diffusion-2-1-base'
+scheduler = DDIMScheduler.from_pretrained(model_path, subfolder="scheduler")
+tokenizer = CLIPTokenizer.from_pretrained(model_path, subfolder="tokenizer")
+pipe = StableDiffusionPipeline.from_pretrained(model_path, scheduler=scheduler, tokenizer=tokenizer, safety_checker=None, torch_dtype=torch.float16,  revision=None, use_auth_token=HF_AUTH_TOKEN)
 

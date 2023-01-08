@@ -13,6 +13,10 @@ from CLIPTokenizerWithEmbeddings import CLIPTokenizerWithEmbeddings
 
 import json
 import os
+import s3fs
+
+import uuid    
+
 
 
 # Init is ran on server startup
@@ -27,6 +31,10 @@ def init():
 # Reference your preloaded global model variable here.
 def inference(model_inputs:dict) -> dict:
     global model
+    from dotenv import load_dotenv
+    load_dotenv() # take environment variables from .env.
+
+    HF_AUTH_TOKEN = os.getenv("HF_AUTH_TOKEN")
 
     # Parse out your arguments
     # prompt = model_inputs.get('prompt', None)
@@ -37,7 +45,8 @@ def inference(model_inputs:dict) -> dict:
     # guidance_scale = model_inputs.get('guidance_scale', 7.5)
     # input_seed = model_inputs.get("seed",None)
 
-    
+    # with open(f"{user_id}/{model_id}/model_inputs.json", "w") as f:
+    #     json.dump(model_inputs, f, indent=4)
     
     OUTPUT_DIR = "stable_diffusion_weights"
     concepts_list = model_inputs.get("concepts_list",None)
@@ -62,8 +71,12 @@ def inference(model_inputs:dict) -> dict:
     guidance_scale = model_inputs.get('guidance_scale', 7.5)
     input_seed = model_inputs.get("seed",None)
 
+    user_id = model_inputs.get("user_id",None)
+    model_id = uuid.uuid4().hex
 
 
+    if user_id == None:
+        return {'message': "No user_id provided"}
 
     if concepts_list == None:
         return {'message': "No concepts_list provided"}
@@ -71,10 +84,22 @@ def inference(model_inputs:dict) -> dict:
     if prompt == None:
         return {'message': "No prompt provided"}
 
+
+    
+    s3_file = s3fs.S3FileSystem(key=os.getenv("KEY"), secret=os.getenv("SECRET"), client_kwargs={'endpoint_url':'https://s3.eu-central-1.amazonaws.com'})
+                           
+                        
+
     for c in concepts_list:
         os.makedirs(c["instance_data_dir"], exist_ok=True)
         if c.get('class_data_dir'):
             os.makedirs(c["class_data_dir"], exist_ok=True)
+
+        local_path = f"{c['instance_data_dir']}/"
+        s3_path = f"stable-diffusion-finetunings/{user_id}/data/{c['instance_data_dir']}/"
+        s3_file.get(s3_path, local_path, recursive=True) 
+        
+ 
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -124,7 +149,12 @@ def inference(model_inputs:dict) -> dict:
             pass
     model_folder = max(filtered_files)
 
-    model_path = OUTPUT_DIR + '/' + model_folder
+    model_path = OUTPUT_DIR + '/' + '10'#str(model_folder)
+
+
+    local_path = f"{model_path}/"
+    s3_path = f"stable-diffusion-finetunings/{user_id}/{model_id}"
+    s3_file.put(local_path, s3_path, recursive=True) 
 
     tokenizer = CLIPTokenizerWithEmbeddings.from_pretrained(model_path, subfolder="tokenizer")
 
@@ -167,7 +197,7 @@ def inference(model_inputs:dict) -> dict:
     image_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
 
     # Return the results as a dictionary
-    return {'image_base64': image_base64}
+    return {'image_base64': image_base64, 'model_id' : model_id, 'user_id' : user_id}
 
 
 
