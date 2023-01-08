@@ -87,8 +87,7 @@ def inference(model_inputs:dict) -> dict:
 
     
     s3_file = s3fs.S3FileSystem(key=os.getenv("KEY"), secret=os.getenv("SECRET"), client_kwargs={'endpoint_url':'https://s3.eu-central-1.amazonaws.com'})
-                           
-                        
+     
 
     for c in concepts_list:
         os.makedirs(c["instance_data_dir"], exist_ok=True)
