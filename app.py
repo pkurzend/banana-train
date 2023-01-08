@@ -22,7 +22,7 @@ import uuid
 # Init is ran on server startup
 # Load your model to GPU as a global variable here using the variable name "model"
 def init():
-    global model
+
     HF_AUTH_TOKEN = os.getenv("HF_AUTH_TOKEN")
     
 
@@ -30,7 +30,7 @@ def init():
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
 def inference(model_inputs:dict) -> dict:
-    global model
+
     from dotenv import load_dotenv
     load_dotenv() # take environment variables from .env.
 
